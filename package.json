@@ -1,0 +1,22 @@
+{
+  "name": "commerce-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "clear && node ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Asoaresdev/commerce-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Asoaresdev/commerce-backend/issues"
+  },
+  "homepage": "https://github.com/Asoaresdev/commerce-backend#readme"
+}
