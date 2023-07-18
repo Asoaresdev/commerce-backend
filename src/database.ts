@@ -17,7 +17,7 @@ export const users: User[] = [
     }
 ]
 
-export const produtcs: Products[] = [
+export const products: Products[] = [
     {
         id: "prod001",
         name: "Mouse gamer",
