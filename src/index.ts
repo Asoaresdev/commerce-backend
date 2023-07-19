@@ -64,3 +64,46 @@ app.post("/products", (req:Request, res: Response) => {
     res.status(201).send(`Produto ${name} criado com sucesso`)
 })
 
+app.delete("/users/:id", (req: Request, res: Response) => {
+    const idUser = req.params.id
+
+    const indexUser = users.findIndex((user) => user.id === idUser)
+
+    if(indexUser >= 0){
+        users.splice(indexUser, 1)
+        res.status(200).send(`Usuario de id:${idUser} deletado`)
+    }else{
+        res.send(`Usuario de id:${idUser} não encontrado`) 
+    }
+})
+
+
+app.delete("/products/:id", (req: Request, res: Response) => {
+    const idProduct = req.params.id
+
+    const indexProduct = products.findIndex((product) => product.id === idProduct)
+    
+    if(indexProduct >= 0){
+        const NameProduct = products[indexProduct].name
+        products.splice(indexProduct,1)
+        res.status(200).send(`Produto ${NameProduct}, com id: ${idProduct}, apagado com sucesso`)
+    }else{
+        res.send(`Produto de id:${idProduct} não encontrado`) 
+    }
+})
+
+app.put("/products/:id", (req: Request, res: Response) =>{
+    const idProduct = req.params.id
+    const { newId, newName, newPrice, newDescription, newImageUrl } = req.body
+
+    const productToEdit = products.find((product) => product.id === idProduct)
+    
+    if(productToEdit){
+        productToEdit.id = newId || productToEdit.id
+        productToEdit.name = newName || productToEdit.name
+        productToEdit.price = newPrice || productToEdit.price
+        productToEdit.description = newDescription || productToEdit.description
+        productToEdit.imageUrl = newImageUrl || productToEdit.imageUrl
+    }
+    res.status(200).send(`produto alterado com sucesso`)
+})
