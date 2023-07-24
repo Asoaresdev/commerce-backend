@@ -63,3 +63,42 @@ OFFSET 0;
 SELECT * FROM users
 LIMIT 2
 OFFSET 2;
+
+-- query buscar todos os users
+
+SELECT * FROM users;
+
+-- query buscar todos os produtos
+SELECT * FROM products;
+
+-- query usando um termo de busca
+SELECT * FROM products
+WHERE name like "%gamer%";
+
+-- query criar um usuario
+INSERT INTO users(id, name, email, password, created_at)
+VALUES
+("05", "Teste Silva", "teste05@email.com", "12345678", DATETIME('now'));
+
+-- query criar novo produto
+INSERT INTO products (id, name, price, description, image_url)
+VALUES("prod005","Mouse gamer", 250, "Melhor mouse do mercado!", "https://picsum.photos/seed/Mouse%20gamer/400" );
+
+-- editar produto por id
+UPDATE products
+SET 
+    id ="prod01",
+    name = "mouse Gamer", 
+    price = 300,
+    description ="bla bla"
+    image_url = "teste"
+WHERE id= "prod01";
+
+-- deletar usuario por id 
+DELETE FROM users
+WHERE id = "0100"; 
+
+-- deletar produto por id 
+
+DELETE FROM products
+WHERE id = "prod005";
