@@ -5,3 +5,4 @@ request.rest
 .vscode
 requests.rest
 *.zip
+*.db
