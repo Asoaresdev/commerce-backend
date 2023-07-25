@@ -102,3 +102,36 @@ WHERE id = "0100";
 
 DELETE FROM products
 WHERE id = "prod005";
+
+CREATE TABLE purchases (
+    id  TEXT PRIMARY KEY UNIQUE NOT NULL,
+    buyer TEXT NOT NULL,
+    total_price  REAL NOT NULL,
+    created_at TEXT NOT NULL,
+    Foreign Key (buyer) REFERENCES users (id)
+);
+
+INSERT INTO purchases (id, buyer, total_price, created_at)
+VALUES("purc001","002", 2500,  DATETIME('now') );
+
+SELECT * FROM purchases;
+
+DELETE FROM purchases
+WHERE ID = "purc005";
+
+UPDATE purchases
+SET total_price = 1000
+WHERE id= "purc001";
+
+SELECT * FROM purchases
+INNER JOIN users
+ON purchases.buyer=users.id;
+
+SELECT 
+    purchases.id,
+    purchases.buyer,
+    users.name,
+    users.id
+FROM purchases
+INNER JOIN users
+ON purchases.buyer=users.id;
