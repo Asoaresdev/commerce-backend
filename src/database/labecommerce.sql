@@ -135,3 +135,66 @@ SELECT
 FROM purchases
 INNER JOIN users
 ON purchases.buyer=users.id;
+
+CREATE TABLE purchases_products(
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity REAL NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases (id)
+    FOREIGN KEY (product_id) REFERENCES products (id)
+);
+
+DROP TABLE purchases_products;
+
+INSERT INTO purchases_products (purchase_id, product_id, quantity)
+VALUES("purc005","prod002", 25 );
+
+SELECT * FROM purchases_products;
+
+SELECT 
+    products.id AS productsId,
+    products.name,
+    products.description,
+    products.price,
+    purchases.id AS purchasesId,
+    purchases.buyer,
+    purchases.total_price
+
+FROM purchases_products
+INNER JOIN products
+ON products.id = purchases_products.product_id 
+INNER JOIN purchases
+ON purchases_products.purchase_id = purchases.id;
+
+-- refatorando as tabelas para efeito cascata ao atualizar dado com FK 
+DROP TABLE purchases;
+DROP TABLE purchases_products;
+
+CREATE TABLE purchases (
+    id  TEXT PRIMARY KEY UNIQUE NOT NULL,
+    buyer TEXT NOT NULL,
+    total_price  REAL NOT NULL,
+    created_at TEXT NOT NULL,
+    Foreign Key (buyer) REFERENCES users (id)
+        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
+        ON DELETE CASCADE -- efeito cascata ao deletar id na tabela users 
+);
+
+INSERT INTO purchases (id, buyer, total_price, created_at)
+VALUES("purc002","002", 2500,  DATETIME('now') );
+
+CREATE TABLE purchases_products(
+    purchase_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    quantity REAL NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchases (id)
+        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela purchases
+        ON DELETE CASCADE -- efeito cascata ao deletar id na tabela purchases
+    FOREIGN KEY (product_id) REFERENCES products (id)
+        ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela products
+        ON DELETE CASCADE -- efeito cascata ao deletar id na tabela products
+
+);
+
+INSERT INTO purchases_products (purchase_id, product_id, quantity)
+VALUES("purc002","prod002", 25 );
