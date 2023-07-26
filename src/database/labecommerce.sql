@@ -183,6 +183,9 @@ CREATE TABLE purchases (
 INSERT INTO purchases (id, buyer, total_price, created_at)
 VALUES("purc002","002", 2500,  DATETIME('now') );
 
+INSERT INTO purchases (id, buyer, total_price, created_at)
+VALUES("purc052","001", 2500,  DATETIME('now') );
+
 CREATE TABLE purchases_products(
     purchase_id TEXT NOT NULL,
     product_id TEXT NOT NULL,
