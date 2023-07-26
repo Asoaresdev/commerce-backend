@@ -173,7 +173,7 @@ DROP TABLE purchases_products;
 CREATE TABLE purchases (
     id  TEXT PRIMARY KEY UNIQUE NOT NULL,
     buyer TEXT NOT NULL,
-    total_price  REAL NOT NULL,
+    total_price  REAL DEFAULT(0) NOT NULL,
     created_at TEXT NOT NULL,
     Foreign Key (buyer) REFERENCES users (id)
         ON UPDATE CASCADE -- efeito cascata ao atualizar id na tabela users
