@@ -207,7 +207,7 @@ app.delete( "/users/:id", async ( req: Request, res: Response ) => {
     try{
         const idUser = req.params.id
     
-        const [ user ] = await db.raw(`
+        const [ user ] : User[] = await db.raw(`
             SELECT * FROM users
             WHERE id = "${ idUser }";
         `)
@@ -241,7 +241,7 @@ app.delete("/products/:id", async ( req: Request, res: Response ) => {
     try {
         const idProduct = req.params.id
     
-        const [ product ] = await db.raw(`
+        const [ product ] : Products[] = await db.raw(`
             SELECT * FROM products
             WHERE id = "${ idProduct }";
         `)
@@ -268,7 +268,7 @@ app.delete("/products/:id", async ( req: Request, res: Response ) => {
     }
 })
 
-app.put("/products/:id", async( req: Request, res: Response) => {
+app.put( "/products/:id", async( req: Request, res: Response) => {
     try{
         const idProduct = req.params.id
         const { newId, newName, newPrice, newDescription, newImageUrl } = req.body
@@ -304,10 +304,10 @@ app.put("/products/:id", async( req: Request, res: Response) => {
             UPDATE products
             SET
                 id = "${ newId || productToEdit.id }",
-                name = "${ newId || productToEdit.name }",
-                price = "${ newId || productToEdit.price }",
-                description = "${ newId || productToEdit.description }",
-                image_url = "${ newId || productToEdit.image_url }"
+                name = "${ newName || productToEdit.name }",
+                price = "${ newPrice || productToEdit.price }",
+                description = "${ newDescription || productToEdit.description }",
+                image_url = "${ newImageUrl || productToEdit.image_url }"
             WHERE
                 id = "${idProduct}"
             `)
@@ -315,6 +315,72 @@ app.put("/products/:id", async( req: Request, res: Response) => {
         res.status( 200 ).send( { message:`produto alterado com sucesso` } )
 
     }catch( error : any ){
+              
+        if( res.statusCode === 200 ) {
+            res.status( 500 ).send( "Erro inseperado no servidor" )
+        }
+        
+        if( error instanceof Error ){
+            res.send( error.message )
+        } else{
+            res.send( "Erro inesperado" )
+        }
+    }
+})
+
+app.post( "/purchases", async( req: Request, res: Response ) => {
+    try{
+        const { id, buyer, products } = req.body
+
+        if( !id || typeof id !== "string" ){
+            res.statusCode = 400
+            throw new Error( "id é obrigatório e precisa ser uma string" )
+        }
+        if( !buyer || typeof buyer !== "string" ){
+            res.statusCode = 400
+            throw new Error( "buyer é obrigatório e precisa ser uma string" )
+        }
+        if( !products ){
+            res.statusCode = 400
+            throw new Error( "products é obrigatório" )
+        }
+        
+                
+        let query = ""
+        let totalPrice = 0
+        for ( const product of products ) {
+            if( !product.quantity ||  typeof product.quantity !== "number"  ){
+                res.statusCode = 400
+                throw new Error( "quantitiy em products é obrigatório e precisa ser um number" )
+            }
+            if( !product.id  || typeof product.id !== "string"  ){
+                res.statusCode = 400
+                throw new Error( "id de products é obrigatório e precisa ser uma string" )
+            }
+
+            const [ priceProduct ] = await db.raw(`
+                SELECT price FROM products
+                WHERE id = "${ product.id }"
+            `)
+            
+            totalPrice += product.quantity * priceProduct.price
+            
+            query += `( "${ id }", "${ product.id }", ${ product.quantity } ), `
+        }
+        
+        await db.raw(`
+        INSERT INTO purchases ( id, buyer, total_price, created_at )
+        VALUES( "${ id }","${ buyer }","${ totalPrice }","${ new Date().toISOString() }" )
+        `)
+        const newTeste = query.slice(0, -2)
+
+        await db.raw(`
+            INSERT INTO purchases_products ( purchase_id, product_id, quantity )
+            VALUES
+            ${ newTeste }
+        `)
+        res.status( 201 ).send( { message:`Pedido realizado com sucesso` } )
+    }catch( error:any ){
         console.log(error);
         
         if( res.statusCode === 200 ) {
@@ -326,5 +392,6 @@ app.put("/products/:id", async( req: Request, res: Response) => {
         } else{
             res.send( "Erro inesperado" )
         }
+        
     }
 })

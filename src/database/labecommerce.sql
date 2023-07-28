@@ -147,7 +147,7 @@ CREATE TABLE purchases_products(
 DROP TABLE purchases_products;
 
 INSERT INTO purchases_products (purchase_id, product_id, quantity)
-VALUES("purc005","prod002", 25 );
+VALUES("purc001","prod002", 25 ), ("purc001","prod001", 25 );
 
 SELECT * FROM purchases_products;
 
@@ -201,3 +201,11 @@ CREATE TABLE purchases_products(
 
 INSERT INTO purchases_products (purchase_id, product_id, quantity)
 VALUES("purc002","prod002", 25 );
+
+SELECT price FROM products
+WHERE id = "prod001";
+
+SELECT * FROM purchases;
+SELECT * FROM purchases_products;
+
+
