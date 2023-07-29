@@ -202,10 +202,16 @@ CREATE TABLE purchases_products(
 INSERT INTO purchases_products (purchase_id, product_id, quantity)
 VALUES("purc002","prod002", 25 );
 
+INSERT INTO purchases_products (purchase_id, product_id, quantity)
+VALUES("teste0132","prod002", 2 );
+INSERT INTO purchases_products (purchase_id, product_id, quantity)
+VALUES("teste0132","prod001", 2 );
+
 SELECT price FROM products
 WHERE id = "prod001";
 
 SELECT * FROM purchases;
 SELECT * FROM purchases_products;
+SELECT * FROM products;
 
 
