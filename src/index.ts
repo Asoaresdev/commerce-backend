@@ -336,6 +336,7 @@ app.post("/purchases", async (req: Request, res: Response) => {
         let query = ""
         let totalPrice = 0
         for (const product of products) {
+                        
             if (!product.quantity || typeof product.quantity !== "number") {
                 res.statusCode = 400
                 throw new Error("quantitiy em products é obrigatório e precisa ser um number")
@@ -373,6 +374,8 @@ app.post("/purchases", async (req: Request, res: Response) => {
         `)
         res.status(201).send({ message: `Pedido realizado com sucesso` })
     } catch (error: any) {
+        console.log(error);
+        
         if (res.statusCode === 200) {
             res.status(500).send("Erro inseperado no servidor")
         }
@@ -389,13 +392,15 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
     try {
         const idPurchase = req.params.id
 
-        const [idBuyer] = await db.select()
-            .from("purchases")
-            .where({ id: idPurchase })
-        console.log(idBuyer);
-
         const products = await db("purchases_products")
-            .select()
+            .select(
+                "products.id",
+                "products.name",
+                "products.price",
+                "products.description",
+                "products.image_url AS imageUrl",
+                "purchases_products.quantity",
+            )
             .innerJoin(
                 "products",
                 "products.id",
@@ -404,20 +409,15 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
             )
             .where({ "purchases_products.purchase_id": idPurchase })
 
-        console.log(products);
-
 
         const [result] = await db("purchases")
             .select(
                 "purchases.id AS purchaseId",
+                "purchases.buyer AS buyerId",
                 "users.name AS buyerName",
                 "users.email AS buyerEmail",
-                "users.password AS buyerPassword",
-                "users.created_at AS createdAt",
-                "purchases.buyer AS buyerId",
                 "purchases.total_price AS totalPrice",
-                "purchases_products.product_id AS productId",
-                "purchases_products.quantity"
+                "users.created_at AS createdAt",
             )
             .innerJoin(
                 "users",
@@ -431,19 +431,9 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
                 "=",
                 "purchases.id"
             )
-            .innerJoin(
-                "products",
-                "products.id",
-                "=",
-                "purchases_products.product_id"
-            )
-            .where({ "purchases.buyer": idBuyer.buyer })
+            .where({ "purchases.id": idPurchase })
 
-        console.log(result);
         const newResult = { ...result, products: products }
-
-        console.log(newResult);
-
 
         if (!result) {
             res.status(404)
@@ -453,11 +443,9 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
         }
 
     } catch (error) {
-        console.log(error)
 
-        // se chegar ainda valendo 200 sabemos que foi um erro inesperado
         if (res.statusCode === 200) {
-            res.status(500) // definimos 500 porque é algo que o servidor não previu
+            res.status(500)
         }
         if (error instanceof Error) {
             res.send(error.message)
