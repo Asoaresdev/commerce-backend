@@ -3,6 +3,8 @@ import cors from "cors"
 import { Products, User } from "./types";
 import { db } from "./database/knex";
 
+import { UserDatabase } from "./database/UserDatabase";
+
 
 const app = express()
 app.use(express.json())
@@ -33,7 +35,10 @@ app.get("/ping", (req: Request, res: Response) => {
 
 app.get("/users", async (req: Request, res: Response) => {
     try {
-        const result = await db("users")
+        
+        // const result = await db("users")
+        const userDatabase = new UserDatabase()
+        const result = await userDatabase.getUsers()
 
 
         res.status(200).send(result)
@@ -64,15 +69,10 @@ app.get("/products", async (req: Request, res: Response) => {
         const name = (req.query.name as string).toLowerCase()
 
         if (name) {
-            // verificação pedida no Projeto, porém sem sentido
-            if (name.length < 1) {
+            if (name.length < 1) {            
                 throw new Error("Precisa de pelo menos 1 caracter")
             }
-            // const result = await db.raw(`
-            //     SELECT * FROM products
-            //     WHERE name like "%${name}%";
-            // `)
-            //==
+
             const result = await db("products")
                 .select()
                 .where("name", "LIKE", `%${name}%`)
