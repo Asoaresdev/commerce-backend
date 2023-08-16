@@ -1,9 +1,10 @@
--- Active: 1690225505629@@127.0.0.1@3306
+-- Active: 1692224782690@@127.0.0.1@3306
 
 
 
 -- =======================********================================
-
+DROP TABLE users;
+DROP TABLE products;
 
 CREATE TABLE users (
     id TEXT UNIQUE PRIMARY KEY NOT NULL,
