@@ -1,4 +1,4 @@
-import { User } from "../types";
+import { User, UserDB } from "../types";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserDatabase extends BaseDatabase {
@@ -8,5 +8,11 @@ export class UserDatabase extends BaseDatabase {
         const result: User[] = await BaseDatabase
         .connection(UserDatabase.TABLE_USERS) 
         return result
+    }
+
+    public async insertUser(newUserDB: UserDB) {
+        await BaseDatabase
+        .connection(UserDatabase.TABLE_USERS)
+        .insert(newUserDB)
     }
 }
