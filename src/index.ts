@@ -138,7 +138,6 @@ app.post("/users", async (req: Request, res: Response) => {
         await userDatabase.insertUser(newUser)
        
 
-
         res.status(201).send("cadastro realizado com sucesso")
     } catch (error: any) {
         console.log(error);
@@ -217,7 +216,8 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
             throw new Error(`Usuario de id: ${idUser} não encontrado`)
         }
 
-        await db("users").del().where({ id: idUser })
+        const userDatabase = new UserDatabase()
+        await userDatabase.deleteUser(idUser)
 
         res.status(200).send({ message: "Usuário deletado com sucesso" })
     } catch (error) {
