@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
-import { Products, User } from "./types";
+import { Products, User, UserDB } from "./types";
 import { db } from "./database/knex";
 
 import { UserDatabase } from "./database/UserDatabase";
@@ -127,14 +127,16 @@ app.post("/users", async (req: Request, res: Response) => {
             res.statusCode = 400
             throw new Error(" Email já cadastrado")
         }
-        const newUser = {
+        const newUser: UserDB = {
             id: id,
             name: name,
             email: email,
             password: password,
             created_at: new Date().toISOString()
         }
-        await db("users").insert(newUser)
+        const userDatabase = new UserDatabase()
+        await userDatabase.insertUser(newUser)
+       
 
 
         res.status(201).send("cadastro realizado com sucesso")
