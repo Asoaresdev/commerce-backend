@@ -4,6 +4,7 @@ import { Products, User, UserDB } from "./types";
 import { db } from "./database/knex";
 
 import { UserDatabase } from "./database/UserDatabase";
+import { ProductsDatabase } from "./database/ProductsDatabase";
 
 
 const app = express()
@@ -68,19 +69,20 @@ app.get("/products", async (req: Request, res: Response) => {
     try {
         const name = (req.query.name as string).toLowerCase()
 
+        const productsDatabase = new ProductsDatabase()
         if (name) {
-            if (name.length < 1) {            
+            console.log(name);
+            
+            if (name.length <= 1) {    
+                res.status(404)
                 throw new Error("Precisa de pelo menos 1 caracter")
             }
 
-            const result = await db("products")
-                .select()
-                .where("name", "LIKE", `%${name}%`)
-
+            const result = await productsDatabase.getProducts(name)
 
             res.status(200).send(result)
         } else {
-            const resultGetAllProducts = await db("products")
+            const resultGetAllProducts = await productsDatabase.getAllProducts()
             res.status(200).send(resultGetAllProducts)
         }
     } catch (error: any) {
