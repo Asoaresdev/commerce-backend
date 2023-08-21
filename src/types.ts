@@ -20,3 +20,10 @@ export type Products = {
     description: string,
     imageUrl: string
 }
+export type ProductsDB = {
+    id: string,
+    name: string,
+    price: number,
+    description: string,
+    image_url: string
+}
