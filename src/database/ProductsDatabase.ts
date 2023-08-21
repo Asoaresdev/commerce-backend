@@ -1,4 +1,4 @@
-import { Products } from "../types";
+import { Products, ProductsDB } from "../types";
 import { BaseDatabase } from "./BaseDatabase";
 
 
@@ -18,6 +18,12 @@ export class ProductsDatabase extends BaseDatabase{
             .connection(ProductsDatabase.TABLE_PRODUCTS)
 
             return result
+    }
+
+    public async insertProduct(newProduct: ProductsDB) {
+        await BaseDatabase
+        .connection(ProductsDatabase.TABLE_PRODUCTS)
+        .insert(newProduct)
     }
 
 }

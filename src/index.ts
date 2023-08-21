@@ -157,6 +157,7 @@ app.post("/products", async (req: Request, res: Response) => {
     try {
         const { id, name, price, description, imageUrl } = req.body
 
+        const productsDatabase = new ProductsDatabase()
         if (typeof id !== "string") {
             res.statusCode = 400
             throw new Error("id precisa ser uma string")
@@ -193,7 +194,7 @@ app.post("/products", async (req: Request, res: Response) => {
             image_url: imageUrl
         }
 
-        await db("products").insert(newProduct)
+        await productsDatabase.insertProduct(newProduct)
 
         res.status(201).send(`Produto ${name} criado com sucesso`)
     } catch (error: any) {
