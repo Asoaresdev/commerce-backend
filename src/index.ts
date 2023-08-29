@@ -249,7 +249,9 @@ app.delete("/products/:id", async (req: Request, res: Response) => {
             throw new Error(`Produto de id:${idProduct} não encontrado`)
         }
 
-        await db("products").del().where({ id: idProduct })
+        const productsDatabase = new ProductsDatabase()
+        await productsDatabase.deleteProduct(idProduct)
+        // await db("products").del().where({ id: idProduct })
 
         res.status(200).send({ message: "Produto deletado com sucesso" })
     } catch (error) {
