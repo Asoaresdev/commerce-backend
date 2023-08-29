@@ -26,4 +26,11 @@ export class ProductsDatabase extends BaseDatabase{
         .insert(newProduct)
     }
 
+    public async deleteProduct(id:string) {
+        await BaseDatabase
+        .connection(ProductsDatabase.TABLE_PRODUCTS)
+        .del()
+        .where({id:id})
+    }
+
 }
