@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
-import { Products, User, UserDB } from "./types";
+import { Products, ProductsDB, User, UserDB } from "./types";
 import { db } from "./database/knex";
 
 import { UserDatabase } from "./database/UserDatabase";
@@ -295,7 +295,7 @@ app.put("/products/:id", async (req: Request, res: Response) => {
         const [productToEdit] = await db("products").where({ id: idProduct })
 
         if (productToEdit) {
-            const updateUser = {
+            const updateUser:ProductsDB = {
                 id: newId || productToEdit.id,
                 name: newName || productToEdit.name,
                 price: newPrice || productToEdit.price,
@@ -303,7 +303,9 @@ app.put("/products/:id", async (req: Request, res: Response) => {
                 image_url: newImageUrl || productToEdit.image_url
             }
 
-            await db("products").update(updateUser).where({ id: idProduct })
+            const productsDatabase = new ProductsDatabase()
+            await productsDatabase.editProduct(idProduct,updateUser)
+            // await db("products").update(updateUser).where({ id: idProduct })
 
         }
         res.status(200).send({ message: `produto alterado com sucesso` })
